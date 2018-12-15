@@ -10,12 +10,20 @@ class Tiket extends REST_Controller {
 
     // show data tiket
     function index_get() {
-        $id_tiket = $this->get('id_tiket');
-        if ($id_tiket == '') {
-            $tiket = $this->db->get('tiket')->result();
+        $tiket = $this->get('tiket');
+        if ($tiket == '') {
+            $this->db->select('id_tiket, nama_penumpang, tiket.no_penerbangan, jumlah, harga_total');
+            $this->db->from('tiket');
+            $this->db->join('penumpang', 'tiket.no_ktp = penumpang.no_ktp', 'inner');
+            $this->db->join('penerbangan', 'tiket.no_penerbangan = penerbangan.no_penerbangan', 'inner');
+            $tiket = $this->db->get()->result();
         } else {
-            $this->db->where('id_tiket', $id_tiket);
-            $tiket = $this->db->get('tiket')->result();
+            $this->db->select('id_tiket, nama_penumpang, tiket.no_penerbangan, jumlah, harga_total');
+            $this->db->from('tiket');
+            $this->db->join('penumpang', 'tiket.no_ktp = penumpang.no_ktp', 'inner');
+            $this->db->join('penerbangan', 'tiket.no_penerbangan = penerbangan.no_penerbangan', 'inner');
+            $this->db->where('id_tiket', $tiket);
+            $tiket = $this->db->get()->result();
         }
         $this->response($tiket, 200);
     }

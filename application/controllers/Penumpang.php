@@ -9,6 +9,7 @@ class Penumpang extends REST_Controller {
     }
 
     // show data penumpang
+    
     function index_get() {
         $no_ktp = $this->get('no_ktp');
         if ($no_ktp == '') {
@@ -18,6 +19,27 @@ class Penumpang extends REST_Controller {
             $penumpang = $this->db->get('penumpang')->result();
         }
         $this->response($penumpang, 200);
+    }
+
+    function login_post(){
+        $username  = $this->post('username');
+        $password  = $this->post('password'); 
+
+        $log = $this->db->query("
+            SELECT * FROM penumpang WHERE username='$username' AND password='$password'");
+
+        if ($log->num_rows() === 1) {
+            $this->response(
+                     $log->row()->no_ktp            
+            );
+        } else {
+            $this->response(
+                array(
+                    "status"  =>"success",
+                    "result" =>null
+                )
+            );
+        }
     }
 
     // insert new data to penumpang
